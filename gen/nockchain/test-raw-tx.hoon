@@ -33,9 +33,11 @@
 ::  ============================================
 ::
 ::  Create single input note with 100 coins
+=/  single-name=nname:txe
+  (simple:new:nname:txe test-lock *source:txe)
 =/  single-note=nnote:txe
   :*  [%0 1 *timelock:txe]           :: version, origin-page, timelock
-      *nname:txe                      :: name  
+      single-name                     :: name  
       test-lock                       :: lock (with our pubkey)
       *source:txe                     :: source
       100                             :: assets (100 coins)
@@ -83,20 +85,26 @@
 ::  ============================================
 ::
 ::  Create first input note with 150 coins
+=/  test-name1=nname:txe
+  (simple:new:nname:txe test-lock *source:txe)
 =/  test-note1=nnote:txe
   :*  [%0 1 *timelock:txe]           :: version, origin-page, timelock
-      *nname:txe                      :: name  
+      test-name1                      :: name  
       test-lock                       :: lock (with our pubkey)
       *source:txe                     :: source
       150                             :: assets (150 coins)
   ==
 ::
-::  Create second input note with 200 coins
+::  Create second input note with 200 coins (different source for unique name)
+=/  test-source2=source:txe
+  [0x1111.1111.1111.1111 %.n]        :: different hash, not coinbase
+=/  test-name2=nname:txe
+  (simple:new:nname:txe test-lock test-source2)
 =/  test-note2=nnote:txe
   :*  [%0 2 *timelock:txe]           :: version, origin-page 2, timelock
-      *nname:txe                      :: name  
+      test-name2                      :: name  
       test-lock                       :: lock (same lock as first)
-      *source:txe                     :: source
+      test-source2                    :: source (different from first)
       200                             :: assets (200 coins)
   ==
 ::
