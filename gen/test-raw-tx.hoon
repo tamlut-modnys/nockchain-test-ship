@@ -1,4 +1,5 @@
 ::  Test generator for new:raw-tx function in tx-engine
+::  Now with multiple inputs test case
 ::
 /+  tx-engine, *zoon, *zeke
 ::
@@ -9,8 +10,7 @@
 ::  Create a simple test for raw-tx
 =/  txe  ~(. tx-engine *blockchain-constants:tx-engine)
 ::
-::  Generate a test keypair
-::  Using a proper 256-bit test secret key
+::  Generate test keypair (using same key for both inputs for now)
 =/  test-sk=schnorr-seckey:txe
   %-  from-atom:schnorr-seckey:txe
   0x1234.5678.9abc.def0.1234.5678.9abc.def0.1234.5678.9abc.def0.1234.5678.9abc.def0
@@ -22,56 +22,99 @@
       a-gen:curve:cheetah
   ==
 ::
-::  Create a lock that requires this public key
+::  Create lock that requires this public key
 =/  test-lock=lock:txe
   :*  1                               :: m (1-of-1 multisig)
       (~(put z-in *(z-set schnorr-pubkey:txe)) test-pk)  :: pubkeys
   ==
 ::
-::  Create a simple input for testing
-=/  test-note=nnote:txe
+::  Create first input note with 150 coins
+=/  test-note1=nnote:txe
   :*  [%0 1 *timelock:txe]           :: version, origin-page, timelock
       *nname:txe                      :: name  
       test-lock                       :: lock (with our pubkey)
       *source:txe                     :: source
-      100                             :: assets (100 coins)
+      150                             :: assets (150 coins)
   ==
 ::
-::  Create a seed that sends coins minus fee
-=/  note-hash=hash:txe  (hash:nnote:txe test-note)
-=/  test-seed=seed:txe
+::  Create second input note with 200 coins
+=/  test-note2=nnote:txe
+  :*  [%0 2 *timelock:txe]           :: version, origin-page 2, timelock
+      *nname:txe                      :: name  
+      test-lock                       :: lock (same lock as first)
+      *source:txe                     :: source
+      200                             :: assets (200 coins)
+  ==
+::
+::  Create seeds for first input (150 coins - 10 fee = 140 to recipient)
+=/  note1-hash=hash:txe  (hash:nnote:txe test-note1)
+=/  test-seed1=seed:txe
   :*  ~                               :: output-source (unit)
       test-lock                       :: recipient (same lock for simplicity)
       *timelock-intent:txe            :: timelock-intent
-      90                              :: gift (100 assets - 10 fee)
-      note-hash                       :: parent-hash
+      140                             :: gift (150 assets - 10 fee)
+      note1-hash                      :: parent-hash
   ==
 ::
-=/  test-seeds=seeds:txe
-  (~(put z-in *seeds:txe) test-seed)
+=/  test-seeds1=seeds:txe
+  (~(put z-in *seeds:txe) test-seed1)
 ::
-::  Create unsigned spend first
-=/  unsigned-spend=spend:txe
+::  Create seeds for second input (200 coins - 15 fee = 185 to recipient)
+=/  note2-hash=hash:txe  (hash:nnote:txe test-note2)
+=/  test-seed2=seed:txe
+  :*  ~                               :: output-source (unit)
+      test-lock                       :: recipient
+      *timelock-intent:txe            :: timelock-intent
+      185                             :: gift (200 assets - 15 fee)
+      note2-hash                      :: parent-hash
+  ==
+::
+=/  test-seeds2=seeds:txe
+  (~(put z-in *seeds:txe) test-seed2)
+::
+::  Create unsigned spends for both inputs
+=/  unsigned-spend1=spend:txe
   :*  ~                               :: signature (starts empty)
-      test-seeds                      :: seeds
-      10                              :: fee
+      test-seeds1                     :: seeds
+      10                              :: fee for input 1
   ==
 ::
-::  Sign the spend
-=/  signed-spend=spend:txe
-  (sign:spend:txe unsigned-spend test-sk)
+=/  unsigned-spend2=spend:txe
+  :*  ~                               :: signature (starts empty)
+      test-seeds2                     :: seeds
+      15                              :: fee for input 2
+  ==
 ::
-=/  test-input=input:txe
-  [test-note signed-spend]
+::  Sign the spends with the same secret key
+=/  signed-spend1=spend:txe
+  (sign:spend:txe unsigned-spend1 test-sk)
 ::
-::  Create inputs form
+=/  signed-spend2=spend:txe
+  (sign:spend:txe unsigned-spend2 test-sk)
+::
+::  Create input structures
+=/  test-input1=input:txe
+  [test-note1 signed-spend1]
+::
+=/  test-input2=input:txe
+  [test-note2 signed-spend2]
+::
+::  Create inputs form with multiple inputs
 =/  test-inputs=inputs:txe
-  (new:inputs:txe test-input)
+  %-  multi:new:inputs:txe
+  ~[test-input1 test-input2]
 ::
 ::  Create the raw tx
 =/  result=raw-tx:txe
   %-  new:raw-tx:txe
   test-inputs
 ::
-::  Return only inputs and tx-id
-[inputs=test-inputs tx-id=id.result]
+::  Return inputs and tx-id with summary info
+:*  %multi-input-test
+    total-inputs=2
+    total-coins-in=350            :: 150 + 200
+    total-fees=25                 :: 10 + 15
+    total-coins-out=325           :: 140 + 185
+    tx-id=id.result
+    inputs=test-inputs
+==
