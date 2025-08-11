@@ -1,5 +1,5 @@
 ::  Test generator for new:raw-tx function in tx-engine
-::  Now with multiple inputs test case
+::  Tests both single-input and multi-input transactions
 ::
 /+  tx-engine=nockchain-tx-engine, *nockchain-zoon, *nockchain-zeke
 ::
@@ -10,7 +10,7 @@
 ::  Create a simple test for raw-tx
 =/  txe  ~(. tx-engine *blockchain-constants:tx-engine)
 ::
-::  Generate test keypair (using same key for both inputs for now)
+::  Generate test keypair (same key used for all tests)
 =/  test-sk=schnorr-seckey:txe
   %-  from-atom:schnorr-seckey:txe
   0x1234.5678.9abc.def0.1234.5678.9abc.def0.1234.5678.9abc.def0.1234.5678.9abc.def0
@@ -27,6 +27,60 @@
   :*  1                               :: m (1-of-1 multisig)
       (~(put z-in *(z-set schnorr-pubkey:txe)) test-pk)  :: pubkeys
   ==
+::
+::  ============================================
+::  TEST 1: Single input transaction
+::  ============================================
+::
+::  Create single input note with 100 coins
+=/  single-note=nnote:txe
+  :*  [%0 1 *timelock:txe]           :: version, origin-page, timelock
+      *nname:txe                      :: name  
+      test-lock                       :: lock (with our pubkey)
+      *source:txe                     :: source
+      100                             :: assets (100 coins)
+  ==
+::
+::  Create seed for output (100 coins - 10 fee = 90 to recipient)
+=/  single-note-hash=hash:txe  (hash:nnote:txe single-note)
+=/  single-seed=seed:txe
+  :*  ~                               :: output-source (unit)
+      test-lock                       :: recipient (same lock for simplicity)
+      *timelock-intent:txe            :: timelock-intent
+      90                              :: gift (100 assets - 10 fee)
+      single-note-hash                :: parent-hash
+  ==
+::
+=/  single-seeds=seeds:txe
+  (~(put z-in *seeds:txe) single-seed)
+::
+::  Create unsigned spend
+=/  single-unsigned-spend=spend:txe
+  :*  ~                               :: signature (starts empty)
+      single-seeds                    :: seeds
+      10                              :: fee
+  ==
+::
+::  Sign the spend
+=/  single-signed-spend=spend:txe
+  (sign:spend:txe single-unsigned-spend test-sk)
+::
+::  Create input structure
+=/  single-input=input:txe
+  [single-note single-signed-spend]
+::
+::  Create inputs form with single input
+=/  single-inputs=inputs:txe
+  (new:inputs:txe single-input)
+::
+::  Create the single-input raw tx
+=/  single-result=raw-tx:txe
+  %-  new:raw-tx:txe
+  single-inputs
+::
+::  ============================================
+::  TEST 2: Multi-input transaction
+::  ============================================
 ::
 ::  Create first input note with 150 coins
 =/  test-note1=nnote:txe
@@ -104,17 +158,26 @@
   %-  multi:new:inputs:txe
   ~[test-input1 test-input2]
 ::
-::  Create the raw tx
-=/  result=raw-tx:txe
+::  Create the multi-input raw tx
+=/  multi-result=raw-tx:txe
   %-  new:raw-tx:txe
   test-inputs
 ::
-::  Return inputs and tx-id with summary info
-:*  %multi-input-test
-    total-inputs=2
-    total-coins-in=350            :: 150 + 200
-    total-fees=25                 :: 10 + 15
-    total-coins-out=325           :: 140 + 185
-    tx-id=id.result
-    inputs=test-inputs
+::  ============================================
+::  Return both test results
+::  ============================================
+:*  %test-results
+    :*  %single-input-test
+        total-coins-in=100
+        fee=10
+        total-coins-out=90
+        tx-id=id.single-result
+    ==
+    :*  %multi-input-test
+        total-inputs=2
+        total-coins-in=350            :: 150 + 200
+        total-fees=25                 :: 10 + 15
+        total-coins-out=325           :: 140 + 185
+        tx-id=id.multi-result
+    ==
 ==
