@@ -164,20 +164,12 @@
   test-inputs
 ::
 ::  ============================================
-::  Return both test results
+::  Return inputs and tx-id for both tests
 ::  ============================================
-:*  %test-results
-    :*  %single-input-test
-        total-coins-in=100
-        fee=10
-        total-coins-out=90
-        tx-id=id.single-result
-    ==
-    :*  %multi-input-test
-        total-inputs=2
-        total-coins-in=350            :: 150 + 200
-        total-fees=25                 :: 10 + 15
-        total-coins-out=325           :: 140 + 185
-        tx-id=id.multi-result
-    ==
+:*  %single-input-test
+    inputs=single-inputs
+    tx-id=id.single-result
+    %multi-input-test
+    inputs=test-inputs
+    tx-id=id.multi-result
 ==
