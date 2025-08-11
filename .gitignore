@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+*.swp
+*~
+
+# Python cache (if any scripts are added)
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
