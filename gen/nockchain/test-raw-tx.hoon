@@ -1,7 +1,7 @@
 ::  Test generator for new:raw-tx function in tx-engine
 ::  Now with multiple inputs test case
 ::
-/+  tx-engine, *zoon, *zeke
+/+  tx-engine=nockchain-tx-engine, *nockchain-zoon, *nockchain-zeke
 ::
 :-  %say
 |=  *

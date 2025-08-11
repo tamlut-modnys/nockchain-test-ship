@@ -1,7 +1,7 @@
-/+  *zoon
-/+  *zeke  
-/=  emission  /lib/schedule
-/=  mine  /lib/pow
+/+  *nockchain-zoon
+/+  *nockchain-zeke  
+/=  emission  /lib/nockchain/schedule
+/=  mine  /lib/nockchain/pow
 ::    tx-engine: this contains all transaction types and logic related to dumbnet.
 ::
 ::  the most notable thing about how this library is written are the types. we use

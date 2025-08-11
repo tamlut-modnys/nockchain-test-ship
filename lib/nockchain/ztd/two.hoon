@@ -1,4 +1,4 @@
-/=  ztd-one  /lib/ztd/one
+/=  ztd-one  /lib/nockchain/ztd/one
 =>  ztd-one
 ~%  %ext-field  ..belt  ~
 ::    math-ext: arithmetic for elements and polynomials over the extension field.

@@ -1,4 +1,4 @@
-/=  ztd-four  /lib/ztd/four
+/=  ztd-four  /lib/nockchain/ztd/four
 =>  ztd-four
 ~%  %utils  ..proof-path  ~
 ::    utils

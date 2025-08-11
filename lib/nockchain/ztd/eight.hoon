@@ -1,4 +1,4 @@
-/=  ztd-seven  /lib/ztd/seven
+/=  ztd-seven  /lib/nockchain/ztd/seven
 =>  ztd-seven
 ~%  %stark-core  ..tlib  ~
 ::    stark-core

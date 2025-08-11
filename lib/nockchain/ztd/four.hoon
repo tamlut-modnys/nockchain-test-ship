@@ -1,4 +1,4 @@
-/=  ztd-three  /lib/ztd/three
+/=  ztd-three  /lib/nockchain/ztd/three
 =>  ztd-three
 ~%  %proof-lib  ..merkle  ~
 ::    proof-library

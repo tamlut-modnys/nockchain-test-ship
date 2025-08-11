@@ -1,4 +1,4 @@
-/=  ztd-two  /lib/ztd/two
+/=  ztd-two  /lib/nockchain/ztd/two
 =>  ztd-two
 ~%  %misc-lib  ..lift  ~
 ::    misc-lib

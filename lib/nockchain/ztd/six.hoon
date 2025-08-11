@@ -1,4 +1,4 @@
-/=  ztd-five  /lib/ztd/five
+/=  ztd-five  /lib/nockchain/ztd/five
 =>  ztd-five
 ~%  %fri  ..proof-stream  ~
 ::    fri

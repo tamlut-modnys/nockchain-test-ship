@@ -7,7 +7,7 @@
 ::    AES and elliptic curve cryptography. Also includes translation
 ::    utilities for working with various formats.
 ::
-/=  zeke  /common/zeke
+/=  zeke  /lib/nockchain/zeke
 ~%  %zose  ..stark-engine-jet-hook:zeke  ~
 |%
 +|  %types

@@ -1,5 +1,5 @@
 ::  /lib/zoon: vendored types from hoon.hoon
-/=  z  /lib/zeke
+/=  z  /lib/nockchain/zeke
 |%
 ::
 +|  %no-by-in

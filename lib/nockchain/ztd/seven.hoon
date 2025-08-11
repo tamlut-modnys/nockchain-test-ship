@@ -1,4 +1,4 @@
-/=  ztd-six  /lib/ztd/six
+/=  ztd-six  /lib/nockchain/ztd/six
 =>  ztd-six
 ~%  %table-lib  ..fri-door  ~
 ::    table-lib
