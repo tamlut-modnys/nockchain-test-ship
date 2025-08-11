@@ -14,10 +14,10 @@ This repository contains libraries and generators for testing Nockchain function
    |mount %base
    ```
 
-3. **Copy the repository files to your ship:**
+3. **Copy the nockchain folders to your ship:**
    ```bash
-   cp -r gen/* /path/to/your-ship/base/gen/
-   cp -r lib/* /path/to/your-ship/base/lib/
+   cp -r gen/nockchain /path/to/your-ship/base/gen/
+   cp -r lib/nockchain /path/to/your-ship/base/lib/
    ```
 
 4. **Commit the changes:**
@@ -63,17 +63,17 @@ The `lib/nockchain/ztd/` directory contains a comprehensive STARK implementation
 
 After copying files and committing to %base, you can:
 
-1. Build the tx-engine library in dojo:
-   ```dojo
-   =tx -build-file /=base=/lib/nockchain/tx-engine/hoon
-   ```
-
-2. Run the test generator:
+1. Run the test generator:
    ```dojo
    +nockchain/test-raw-tx
    ```
 
-3. Access tx-engine types directly:
+2. Build the tx-engine library in dojo to access types directly:
+   ```dojo
+   =tx -build-file /=base=/lib/nockchain/tx-engine/hoon
+   ```
+
+3. Access tx-engine types:
    ```dojo
    *nname:tx
    *input:tx
