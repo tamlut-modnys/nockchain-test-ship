@@ -64,30 +64,14 @@
 =/  test-input=input:txe
   [test-note signed-spend]
 ::
-::  Test input validation
-=/  input-valid=?
-  (validate:input:txe test-input)
-::
 ::  Create inputs form
 =/  test-inputs=inputs:txe
   (new:inputs:txe test-input)
 ::
-::  Try to create a raw tx
-=/  result=(unit raw-tx:txe)
-  %-  mole
-  |.
+::  Create the raw tx
+=/  result=raw-tx:txe
   %-  new:raw-tx:txe
   test-inputs
 ::
-::  Return test results with tx-id
-:*  %test-result
-    loaded=%.y
-    keypair-created=?=(^ test-sk)
-    lock-created=?=(^ test-lock)
-    spend-signed=?=(^ signature.signed-spend)
-    input-valid=input-valid
-    raw-tx-created=?=(^ result)
-    tx-id=?~(result ~ id.u.result)
-    total-fees=?~(result ~ total-fees.u.result)
-    result-info=?~(result 'Failed to create raw-tx' 'Raw-tx created successfully!')
-==
+::  Return only inputs and tx-id
+[inputs=test-inputs tx-id=id.result]
