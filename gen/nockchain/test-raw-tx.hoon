@@ -96,8 +96,10 @@
   ==
 ::
 ::  Create second input note with 200 coins (different source for unique name)
+=/  test-hash2=hash:txe
+  (hash-hashable:tip5 leaf+0x2222)
 =/  test-source2=source:txe
-  [0x1111.1111.1111.1111 %.n]        :: different hash, not coinbase
+  [test-hash2 %.n]
 =/  test-name2=nname:txe
   (simple:new:nname:txe test-lock test-source2)
 =/  test-note2=nnote:txe
