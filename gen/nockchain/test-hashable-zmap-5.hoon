@@ -1,4 +1,4 @@
-::  Test generator that outputs inputs and their hashable z-map representation
+::  Test generator that outputs five inputs and their hashable z-map representation
 ::  For debugging Rust implementation of tx-id hashing
 ::
 /+  tx-engine=nockchain-tx-engine, *nockchain-zoon, *nockchain-zeke
@@ -28,10 +28,7 @@
       (~(put z-in *(z-set schnorr-pubkey:txe)) test-pk)  :: pubkeys
   ==
 ::
-::  ============================================
-::  Create 5 inputs with unique sources
-::  ============================================
-::
+::  Create five inputs with unique sources
 =/  hash5a=hash:txe
   (hash-hashable:tip5 leaf+0x8888)
 =/  source5a=source:txe
